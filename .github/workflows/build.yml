@@ -15,8 +15,8 @@ jobs:
 
     - name: Compile KFD Exploit
       run: |
-        clang -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -mios-version-min=15.0 -c main.c -o main.o
-        clang -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -mios-version-min=15.0 -o kfdexploit main.o
+        clang -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -mios-version-min=15.0 -c macos_kfd.c -o macos_kfd.o
+        clang -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -mios-version-min=15.0 -o kfdexploit macos_kfd.o
 
     - name: Sign the Binary
       run: ldid -S kfdexploit
