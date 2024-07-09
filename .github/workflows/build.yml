@@ -1,0 +1,28 @@
+name: Build KFD Exploit
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v2
+
+    - name: Set up Xcode
+      run: sudo xcode-select -s /Applications/Xcode_12.4.app
+
+    - name: Compile KFD Exploit
+      run: |
+        clang -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -mios-version-min=15.0 -c main.c -o main.o
+        clang -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -mios-version-min=15.0 -o kfdexploit main.o
+
+    - name: Sign the Binary
+      run: ldid -S kfdexploit
+
+    - name: Upload Binary
+      uses: actions/upload-artifact@v2
+      with:
+        name: kfdexploit
+        path: kfdexploit
