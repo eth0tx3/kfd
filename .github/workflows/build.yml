@@ -8,18 +8,21 @@ jobs:
 
     steps:
     - name: Checkout source code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Xcode
-      run: sudo xcode-select -s /Applications/Xcode_12.4.app
+      run: sudo xcode-select -s /Applications/Xcode.app
 
     - name: Compile KFD Exploit
       run: |
-        clang -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -mios-version-min=15.0 -c macos_kfd.c -o macos_kfd.o
-        clang -arch arm64 -isysroot $(xcrun --sdk iphoneos --show-sdk-path) -mios-version-min=15.0 -o kfdexploit macos_kfd.o
+        SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
+        clang -arch arm64 -isysroot $SDK_PATH -mios-version-min=15.0 -c macos_kfd.c -o macos_kfd.o
+        clang -arch arm64 -isysroot $SDK_PATH -mios-version-min=15.0 -o kfdexploit macos_kfd.o
 
     - name: Sign the Binary
-      run: ldid -S kfdexploit
+      run: |
+        brew install ldid
+        ldid -S kfdexploit
 
     - name: Upload Binary
       uses: actions/upload-artifact@v2
